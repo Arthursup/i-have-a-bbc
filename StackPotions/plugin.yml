@@ -1,0 +1,8 @@
+<?php
+
+name: StackPotion
+version: 0.0.4
+main: learxd\potion\Loader
+api: [5.15.0]
+author: lEaRxD
+description: Plugin para empilhar poções no PocketMine-MP 5.0.0
