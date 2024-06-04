@@ -1,0 +1,5 @@
+name: StackPotion
+version: 0.0.3
+main: learxd\potion\Loader
+api: [5.15.0]
+author: lEaRxD
