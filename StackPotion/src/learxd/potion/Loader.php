@@ -17,7 +17,8 @@ class Loader extends PluginBase implements Listener {
     public function onEnable(): void {
         self::$instance = $this;
         $this->saveResource('config.yml', false);
-        $this->getServer()->getCommandMap()->register('stackpotion', new StackPotionsCommand());
+        $this->getServer()->getCommandMap()->register('stackpotion', new StackPotionsCommand($this));
         $this->getServer()->getPluginManager()->registerEvents(new StackPotionHandler(), $this);
     }
 }
+
