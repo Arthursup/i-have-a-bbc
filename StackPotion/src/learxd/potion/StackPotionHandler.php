@@ -14,8 +14,9 @@ use pocketmine\entity\effect\VanillaEffects;
 
 class StackPotionHandler implements Listener {
 
-    public function playerConsume(PlayerItemConsumeEvent $consumeEvent) {
-        $player = $consumeEvent->getPlayer(); $item = $consumeEvent->getItem();
+    public function onPlayerConsume(PlayerItemConsumeEvent $consumeEvent) {
+        $player = $consumeEvent->getPlayer();
+        $item = $consumeEvent->getItem();
         if ($item->getId() === ItemIds::POTION) {
             if (!$consumeEvent->isCancelled()) {
                 $consumeEvent->setCancelled(true);
@@ -26,18 +27,20 @@ class StackPotionHandler implements Listener {
         }
     }
 
-    public function playerInteract(PlayerInteractEvent $interactEvent) {
-        $player = $interactEvent->getPlayer(); $item = $interactEvent->getItem();
+    public function onPlayerInteract(PlayerInteractEvent $interactEvent) {
+        $player = $interactEvent->getPlayer();
+        $item = $interactEvent->getItem();
         list($id, $meta) = explode(':', Loader::get()->getConfig()->get('stack-item')['item']);
-        if ($item->getId() == $id and $meta == $item->getMeta()) {
+        if ($item->getId() == $id && $meta == $item->getMeta()) {
             if (Utils::stackPotions($player)) {
                 $player->getInventory()->removeItem($item);
             }
         }
     }
 
-    public function playerHeldItem(PlayerItemHeldEvent $event) {
-        $player = $event->getPlayer(); $item = $event->getItem();
+    public function onPlayerHeldItem(PlayerItemHeldEvent $event) {
+        $player = $event->getPlayer();
+        $item = $event->getItem();
         if ($item->getId() === ItemIds::POTION && $item->getCustomName() == "") {
             if (isset(Loader::get()->getConfig()->get('custom-potions')[$item->getMeta()])) {
                 $player->getInventory()->removeItem($item);
@@ -88,3 +91,58 @@ class StackPotionHandler implements Listener {
         return $customName;
     }
 }
+
+
+5. **Correções no arquivo Utils.php:**
+
+php
+namespace learxd\potion\utils;
+
+use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
+use pocketmine\player\Player;
+
+class Utils {
+
+    public static function itemsSerialize(array $contents) {
+        array_walk($contents, function ($item, $slot) use (&$contents) {
+            $contents[$slot] = $item->getId() . ":" . $item->getMeta();
+        });
+        return $contents;
+    }
+
+    public static function stackPotions(Player $player) {
+        $contents = $player->getInventory()->getContents(true);
+
+        $oldStack = [];
+        $potions = [];
+
+        array_walk($contents, function ($item, $slot) use (&$potions) {
+            if ($item->getId() === ItemIds::POTION) {
+                if (!isset($potions[$item->getMeta()])) {
+                    $potions[$item->getMeta()] = 0;
+                }
+                $potions[$item->getMeta()] += $item->getCount();
+            }
+        });
+
+        foreach ($potions as $meta => $count) {
+            $stackSize = min($count, 64);
+            $nbt = Item::get(ItemIds::POTION, $meta, $stackSize)->getNamedTag();
+            $nbt->setInt('PotionStack', $count);
+            $potionItem = Item::get(ItemIds::POTION, $meta, 1);
+            $potionItem->setNamedTag($nbt);
+            $potionItem->setLore(
+                [
+                    "",
+                    "§7Poções stackadas: §f" . $count,
+                    "§7Cada vez que você tomar, esse número diminuirá!"
+                ]);
+            $player->getInventory()->addItem($potionItem);
+        }
+
+        return true;
+    }
+}
+
+
