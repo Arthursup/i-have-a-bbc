@@ -10,12 +10,15 @@ use pocketmine\player\Player;
 
 class StackPotionsCommand extends Command {
 
-    public function __construct() {
+    private $plugin;
+
+    public function __construct(Loader $plugin) {
         parent::__construct("stackpotions", "Stacke as poções em seu inventário em uma só...", "", ["stack"]);
-        $permission = Loader::get()->getConfig()->get('stack-permission', '');
+        $permission = $plugin->getConfig()->get('stack-permission', '');
         if ($permission !== '') {
             $this->setPermission($permission);
         }
+        $this->plugin = $plugin;
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): void {
