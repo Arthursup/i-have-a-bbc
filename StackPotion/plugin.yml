@@ -3,3 +3,12 @@ version: 0.0.3
 main: learxd\potion\Loader
 api: [5.15.0]
 author: lEaRxD
+commands:
+  stackpotions:
+    description: Stacke as poções em seu inventário em uma só...
+    usage: /stackpotions
+    permission: stack.permission
+permissions:
+  stack.permission:
+    description: Allows use of the stack potions command
+    default: true
