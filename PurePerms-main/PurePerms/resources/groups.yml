@@ -1,0 +1,44 @@
+# PurePerms by 64FF00 and fernanACM
+# (xktiverz@gmail.com, @64ff00 for Twitter)
+
+---
+Guest:
+  alias: 'gst'
+  inheritance: [ ]
+  permissions:
+    - pocketmine.command.me
+    - pocketmine.command.list
+  worlds: [ ]
+Admin:
+  alias: 'adm'
+  inheritance:
+    - Guest
+  permissions:
+    - pocketmine.command.gamemode
+    - pocketmine.command.give
+    - pocketmine.command.kick
+    - pocketmine.command.teleport
+    - pocketmine.command.time
+    - pocketmine.command.transferserver
+  worlds: [ ]
+Owner:
+  alias: 'owr'
+  inheritance:
+    - Admin
+  permissions:
+    - pocketmine.command.gamemode
+    - pocketmine.command.give
+    - pocketmine.command.kick
+    - pocketmine.command.teleport
+    - pocketmine.command.time
+    - pocketmine.command.transferserver
+  worlds: [ ]
+ACM:
+  alias: 'acm'
+  isDefault: true
+  inheritance: [ ]
+  permissions:
+    - pocketmine.command.transferserver
+    - pocketmine.command.me
+  worlds: [ ]
+...
